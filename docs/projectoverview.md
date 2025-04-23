@@ -29,13 +29,3 @@ Taskify application is a secure and user-friendly platform for managing tasks wi
 ## Final Note
 
 As you progress through this project, don’t hesitate to refer back to the course materials—particularly the modules on API design, database integration, and Identity and Access Management. This is your chance to bring together all the concepts you’ve learned and apply them in a meaningful, real-world context. I’m looking forward to seeing your unique approach to this final challenge and hope you find the experience of building your own task management system both rewarding and enjoyable. Best of luck!
-
-
-## Running End to End Project with Docker Compose
-```shell
-docker compose up -d
-```
-
-Access Project at `http://host.docker.internal`
-
-

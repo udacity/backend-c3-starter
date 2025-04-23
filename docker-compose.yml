@@ -1,0 +1,47 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=taskmanager
+      - POSTGRES_PASSWORD=c6fec46d49164d95aa60d4d26fffc877
+      - POSTGRES_DB=taskmanager
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskmanager -d taskmanager"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  database-migrations:
+    image: migrate/migrate
+    depends_on:
+        postgres-db:
+          condition: service_healthy
+    volumes:
+        - ./database-migrations/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://taskmanager:c6fec46d49164d95aa60d4d26fffc877@postgres-db:5432/taskmanager?sslmode=disable", "-verbose", "up"]
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database-migrations
+    environment:
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USER=taskmanager
+      - DB_PASSWORD=c6fec46d49164d95aa60d4d26fffc877
+      - DB_NAME=taskmanager
+      - JWT_SECRET=661227520dc859283b5f93b94ea7b8fcea611c1552b8122d8691e1b5849ad93f
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
